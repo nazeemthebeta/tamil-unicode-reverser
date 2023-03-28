@@ -1,0 +1,39 @@
+import re
+
+def read_mapping_file(file_path):
+    mapping = {}
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        for line in lines:
+            parts = line.strip().split(',')
+            tamil_char = re.sub('/(.+)/g', '\\1', parts[0]).strip('"')
+            eng_char = parts[1].strip().strip('"')
+            mapping[eng_char] = tamil_char
+    return mapping
+
+def english_to_tamil(english_string, mapping):
+    tamil_string = ''
+    i = 0
+    while i < len(english_string):
+        char = english_string[i]
+        next_char = english_string[i+1] if i+1 < len(english_string) else ''
+        combined_char = char + next_char
+        if combined_char in mapping:
+            tamil_string += mapping[combined_char]
+            i += 2
+        elif char in mapping:
+            tamil_string += mapping[char]
+            i += 1
+        else:
+            tamil_string += char
+            i += 1
+    return tamil_string
+
+
+if __name__ == "__main__":
+    mapping_file = 'mapping.txt'  # Replace this with the path to your mapping file
+    mapping = read_mapping_file(mapping_file)
+
+    english_input = input("Enter the English transliteration: ")
+    tamil_output = english_to_tamil(english_input, mapping)
+    print("Tamil Unicode string:", tamil_output)
