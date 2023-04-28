@@ -1,4 +1,5 @@
 import re
+import csv
 
 def read_mapping_file(file_path):
     mapping = {}
@@ -29,11 +30,17 @@ def english_to_tamil(english_string, mapping):
             i += 1
     return tamil_string
 
-
 if __name__ == "__main__":
     mapping_file = 'mapping.txt'  # Replace this with the path to your mapping file
     mapping = read_mapping_file(mapping_file)
 
-    english_input = input("Enter the English transliteration: ")
-    tamil_output = english_to_tamil(english_input, mapping)
-    print("Tamil Unicode string:", tamil_output)
+    input_file_path = input("Enter the path to the input CSV file: ")
+    output_file_path = input("Enter the path to the output CSV file: ")
+
+    with open(input_file_path, 'r', encoding='utf-8') as input_file, open(output_file_path, 'w', encoding='utf-8', newline='') as output_file:
+        reader = csv.reader(input_file)
+        writer = csv.writer(output_file)
+        for row in reader:
+            english_input = row[0]
+            tamil_output = english_to_tamil(english_input, mapping)
+            writer.writerow([tamil_output])
